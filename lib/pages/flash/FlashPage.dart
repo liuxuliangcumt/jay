@@ -27,7 +27,7 @@ class _FlashPageState extends State<FlashPage> {
     return Container(
       alignment: Alignment.center,
       child: Container(
-        height: 270,
+        height: 280,
         padding: EdgeInsets.only(top: 10, right: 20, left: 20),
         margin: EdgeInsets.all(20),
         decoration: BoxDecoration(
