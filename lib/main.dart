@@ -2,7 +2,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:data_plugin/bmob/bmob.dart';
 import 'package:flutter/material.dart';
 import 'package:jay/pages/flash/FlashPage.dart';
-import 'package:jay/pages/register/RegisterPage.dart';
 
 void main() {
   runApp(MyApp());

@@ -26,6 +26,11 @@ dependencies:
   flutter_banner_swiper: ^0.1.4
   build_runner: ^1.7.0
   audioplayer: ^0.8.1
+  flutter_downloader: ^1.1.7
+  path_provider: 1.1.2
+  permission_handler: ^3.1.0
+  progress_dialog: ^1.1.0+1
+  toast: ^0.1.4
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

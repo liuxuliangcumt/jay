@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audioplayer/audioplayer.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
@@ -6,7 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:flutter_banner_swiper/flutter_banner_swiper.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:jay/beans/Music.dart';
+import 'package:jay/common/PhoneInfo.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MusicList extends StatefulWidget {
   @override
@@ -19,6 +23,23 @@ class _MusicListState extends State<MusicList>  {
     "http://imagescumt.test.upcdn.net/musicBanner/banner2.jpg",
     "http://imagescumt.test.upcdn.net/musicBanner/banner3.jpg"
   ];
+  List<String> tabBarTitles = [
+    "jay",
+    "范特西",
+    "八度空间",
+    "叶惠美",
+    "七里香",
+    "十一月的肖邦",
+    "依然范特西",
+    "我很忙",
+    "摩杰座",
+    "跨时代",
+    "惊叹号",
+    "十二新作",
+    "哎呦，不错哦",
+    "周杰伦的床边故事",
+  ];
+
   AudioPlayer audioPlayer;
 
   @override
@@ -28,8 +49,17 @@ class _MusicListState extends State<MusicList>  {
     super.initState();
     audioPlayer = AudioPlayer();
     initPlayer();
+<<<<<<< HEAD
     getMusicList("jay");
     
+=======
+    //getMusicList("jay");
+    if (Platform.isIOS) {
+      tabBarTitles.clear();
+      tabBarTitles.add("jay");
+    } else if (Platform.isAndroid) {}
+    _checkPermission();
+>>>>>>> a6ef9751101bc02fe32211361cf36849209ec87c
   }
 
   AudioPlayerState playerState;
@@ -67,6 +97,30 @@ class _MusicListState extends State<MusicList>  {
 
   }
 
+<<<<<<< HEAD
+=======
+// 申请权限
+  Future<bool> _checkPermission() async {
+    // 先对所在平台进行判断
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      PermissionStatus permission = await PermissionHandler()
+          .checkPermissionStatus(PermissionGroup.storage);
+      if (permission != PermissionStatus.granted) {
+        Map<PermissionGroup, PermissionStatus> permissions =
+            await PermissionHandler()
+                .requestPermissions([PermissionGroup.storage]);
+        if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
+  }
+>>>>>>> a6ef9751101bc02fe32211361cf36849209ec87c
 
   @override
   void dispose() {
@@ -78,7 +132,7 @@ class _MusicListState extends State<MusicList>  {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: tabBarTitles.length,
       child: Scaffold(
         body: Container(
           child: Column(
@@ -97,32 +151,31 @@ class _MusicListState extends State<MusicList>  {
                       onTap: () {});
                 },
               ),
-              TabBar(
-                labelPadding: EdgeInsets.all(10),
-                tabs: <Widget>[Text("jay"), Text("海兰之戒"), Text("天空之城")],
-                unselectedLabelColor: Colors.grey,
-                //设置未选中时的字体颜色，tabs里面的字体样式优先级最高
-                unselectedLabelStyle: TextStyle(fontSize: 20),
-                //设置未选中时的字体样式，tabs里面的字体样式优先级最高
-                labelColor: Colors.black,
-                //设置选中时的字体颜色，tabs里面的字体样式优先级最高
-                labelStyle: TextStyle(fontSize: 20.0),
-                //设置选中时的字体样式，tabs里面的字体样式优先级最高
-                isScrollable: true,
-                //允许左右滚动
-                indicatorColor: Colors.red,
-                //选中下划线的颜色
-                indicatorSize: TabBarIndicatorSize.label,
-                //选中下划线的长度，label时跟文字内容长度一样，tab时跟一个Tab的长度一样
+              Padding(
+                child: TabBar(
+                  labelPadding: EdgeInsets.all(10),
+                  tabs: getTabs(),
+                  unselectedLabelColor: Colors.grey,
+                  //设置未选中时的字体颜色，tabs里面的字体样式优先级最高
+                  unselectedLabelStyle: TextStyle(fontSize: 20),
+                  //设置未选中时的字体样式，tabs里面的字体样式优先级最高
+                  labelColor: Colors.black,
+                  //设置选中时的字体颜色，tabs里面的字体样式优先级最高
+                  labelStyle: TextStyle(fontSize: 20.0),
+                  //设置选中时的字体样式，tabs里面的字体样式优先级最高
+                  isScrollable: true,
+                  //允许左右滚动
+                  indicatorColor: Colors.red,
+                  //选中下划线的颜色
+                  indicatorSize: TabBarIndicatorSize.label,
+                  //选中下划线的长度，label时跟文字内容长度一样，tab时跟一个Tab的长度一样
 //                indicator: BoxDecoration(),//用于设定选中状态下的展示样式
+                ),
+                padding: EdgeInsets.only(left: 10, right: 10),
               ),
               Expanded(
                 child: TabBarView(
-                  children: <Widget>[
-                    getMusicListItem("jay"),
-                    Text("非官方个"),
-                    Text("水电费方法个人"),
-                  ],
+                  children: getTabBarViews(),
                 ),
               ),
               playItem()
@@ -135,12 +188,20 @@ class _MusicListState extends State<MusicList>  {
 
   Map musicAlbum = new Map();
 
+//获取音乐列表数据
   Widget getMusicList(String s) {
     List<jayMusic> musics = new List();
     BmobQuery<jayMusic> query = BmobQuery();
     query.addWhereEqualTo("album", s);
     query.queryObjects().then((data) {
       musics = data.map((i) => jayMusic.fromJson(i)).toList();
+      if (musics.length > 0) {
+        if (Platform.isIOS) {
+          musics.clear();
+          musics.add(data.map((i) => jayMusic.fromJson(i)).toList()[0]);
+        }
+      }
+
       setState(() {
         musicAlbum[s] = musics;
       });
@@ -158,6 +219,7 @@ class _MusicListState extends State<MusicList>  {
 
   jayMusic music;
 
+//获取音乐列表
   Widget getMusicListItem(String s) {
     if (musicAlbum.containsKey(s)) {
       List<jayMusic> musics = musicAlbum[s];
@@ -202,11 +264,27 @@ class _MusicListState extends State<MusicList>  {
   }
 
   Future<void> playMusic(String url) async {
+    // 设置边下边播
     audioPlayer.pause();
     audioPlayer.play(url);
     audioPlayer.seek(duration);
+    downloadFile(url, PhoneInfo.findLocalPath(context));
   }
 
+// 根据 downloadUrl 和 savePath 下载文件
+  downloadFile(downloadUrl, savePath) async {
+    print("进入下载文件");
+    await FlutterDownloader.enqueue(
+      url: downloadUrl,
+      savedDir: savePath,
+      showNotification: true,
+      // show download progress in status bar (for Android)
+      openFileFromNotification:
+          true, // click on notification to open downloaded file (for Android)
+    );
+  }
+
+//底部播放控制行
   Widget playItem() {
     return Container(
       padding: EdgeInsets.only(left: 8, right: 15, bottom: 8),
@@ -278,6 +356,7 @@ class _MusicListState extends State<MusicList>  {
     );
   }
 
+<<<<<<< HEAD
   int getIntFromMusicTime(String mTime) {
     return (int.parse(mTime.substring(0, 1)) * 60 * 60 +
         int.parse(mTime.substring(2, 4)) * 60 +
@@ -285,4 +364,22 @@ class _MusicListState extends State<MusicList>  {
   }
 
 
+=======
+  List<Widget> getTabs() {
+    List<Widget> tabs = new List();
+
+    for (var i = 0; i < tabBarTitles.length; i++) {
+      tabs.add(Text(tabBarTitles[i]));
+    }
+    return tabs;
+  }
+
+  List<Widget> getTabBarViews() {
+    List<Widget> barViews = List();
+    for (var i = 0; i < tabBarTitles.length; i++) {
+      barViews.add(getMusicListItem(tabBarTitles[i]));
+    }
+    return barViews;
+  }
+>>>>>>> a6ef9751101bc02fe32211361cf36849209ec87c
 }
