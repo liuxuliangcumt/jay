@@ -4,6 +4,7 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:flutter_banner_swiper/flutter_banner_swiper.dart';
 import 'package:jay/beans/Music.dart';
 
@@ -12,7 +13,7 @@ class MusicList extends StatefulWidget {
   _MusicListState createState() => _MusicListState();
 }
 
-class _MusicListState extends State<MusicList> {
+class _MusicListState extends State<MusicList>  {
   List<String> bannerList = [
     "http://imagescumt.test.upcdn.net/musicBanner/banner1.jpg",
     "http://imagescumt.test.upcdn.net/musicBanner/banner2.jpg",
@@ -28,14 +29,17 @@ class _MusicListState extends State<MusicList> {
     audioPlayer = AudioPlayer();
     initPlayer();
     getMusicList("jay");
+    
   }
 
   AudioPlayerState playerState;
   var _positionSubscription, _audioPlayerStateSubscription, position, duration;
 
   void initPlayer() {
-    _positionSubscription = audioPlayer.onAudioPositionChanged
-        .listen((p) => setState(() => position = p));
+    _positionSubscription = audioPlayer.onAudioPositionChanged.listen((p) {
+      setState(() => position = p);
+      print("当前位置position $p");
+    });
 
     _audioPlayerStateSubscription =
         audioPlayer.onPlayerStateChanged.listen((s) {
@@ -45,6 +49,7 @@ class _MusicListState extends State<MusicList> {
       });
       if (s == AudioPlayerState.PLAYING) {
         setState(() => duration = audioPlayer.duration);
+        print(" 歌曲duration  $duration");
       } else if (s == AudioPlayerState.STOPPED) {
         //   onComplete();
         setState(() {
@@ -58,7 +63,10 @@ class _MusicListState extends State<MusicList> {
         position = new Duration(seconds: 0);
       });
     });
+
+
   }
+
 
   @override
   void dispose() {
@@ -161,7 +169,7 @@ class _MusicListState extends State<MusicList> {
             return Container(
               child: ListTile(
                 onTap: () {
-                  if(currentIndex==index){
+                  if (currentIndex == index) {
                     return;
                   }
                   setState(() {
@@ -205,13 +213,39 @@ class _MusicListState extends State<MusicList> {
       color: Colors.grey[200],
       child: Row(
         children: <Widget>[
-          ClipOval(
-            child: Image.network(
-              bannerList[0],
-              width: 50,
-              height: 50,
-              fit: BoxFit.fitHeight,
-            ),
+          Stack(
+            children: <Widget>[
+              RotationTransition(
+                //设置动画的旋转中心
+                alignment: Alignment.center,
+                //动画控制器
+                turns: controller,
+                //将要执行动画的子view
+                child: ClipOval(
+                  child: Image.network(
+                    bannerList[0],
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
+              ),
+              SizedBox(
+                //限制进度条的高度
+                height: 50,
+                //限制进度条的宽度
+                width: 50,
+                child: new CircularProgressIndicator(
+                    //0~1的浮点数，用来表示进度多少;如果 value 为 null 或空，则显示一个动画，否则显示一个定值
+                    value: getIntFromMusicTime(position.toString()) /
+                        getIntFromMusicTime(duration.toString()),
+                    //背景颜色
+                    backgroundColor: Colors.yellow,
+                    strokeWidth: 2,
+                    //进度颜色
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.red)),
+              )
+            ],
           ),
           SizedBox(
             width: 20,
@@ -229,19 +263,26 @@ class _MusicListState extends State<MusicList> {
                   : Icons.stop,
               size: 35,
             ),
-            onTap: (){
-              if(playerState==AudioPlayerState.PLAYING){
+            onTap: () {
+              if (playerState == AudioPlayerState.PLAYING) {
                 audioPlayer.pause();
-              }else{
-                if(music!=null){
+              } else {
+                if (music != null) {
                   playMusic(music.urlPath);
                 }
               }
-
             },
           ),
         ],
       ),
     );
   }
+
+  int getIntFromMusicTime(String mTime) {
+    return (int.parse(mTime.substring(0, 1)) * 60 * 60 +
+        int.parse(mTime.substring(2, 4)) * 60 +
+        int.parse(mTime.substring(5, 7)));
+  }
+
+
 }
