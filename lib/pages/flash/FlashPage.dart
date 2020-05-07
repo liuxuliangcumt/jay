@@ -115,9 +115,9 @@ class _FlashPageState extends State<FlashPage> {
   Future<void> _incrementCounter() async {
     final SharedPreferences prefs = await _prefs;
     final String userName = prefs.getString(Constants.userName);
-    if (userName.length == 0) {
+    if (userName == null) {
       showLogin();
-    }else{
+    } else {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MusicList()),

@@ -9,6 +9,7 @@
     <uses-permission android:name="android.pernission.READ_EXTERNAL_STOREGE" />
     <uses-permission android:name="android.pernission.WRITE_EXTERNAL_STOREGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
@@ -32,11 +33,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-
-            />
-        <provider
             android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
             android:authorities="${applicationId}.flutter_downloader.provider"
             android:exported="false"
@@ -46,15 +42,5 @@
                 android:resource="@xml/provider_paths"/>
         </provider>
 
-
-        <provider
-            android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
-            android:authorities="${applicationId}.flutter-downloader-init"
-            android:exported="false">
-            <!-- changes this number to configure the maximum number of concurrent tasks -->
-            <meta-data
-                android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
-                android:value="5" />
-        </provider>
     </application>
 </manifest>

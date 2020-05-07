@@ -17,7 +17,7 @@ class MusicList extends StatefulWidget {
   _MusicListState createState() => _MusicListState();
 }
 
-class _MusicListState extends State<MusicList>  {
+class _MusicListState extends State<MusicList> {
   List<String> bannerList = [
     "http://imagescumt.test.upcdn.net/musicBanner/banner1.jpg",
     "http://imagescumt.test.upcdn.net/musicBanner/banner2.jpg",
@@ -49,26 +49,27 @@ class _MusicListState extends State<MusicList>  {
     super.initState();
     audioPlayer = AudioPlayer();
     initPlayer();
-<<<<<<< HEAD
-    getMusicList("jay");
-    
-=======
+    initDownLoader();
+
     //getMusicList("jay");
     if (Platform.isIOS) {
       tabBarTitles.clear();
       tabBarTitles.add("jay");
-    } else if (Platform.isAndroid) {}
+    } else if (Platform.isAndroid) {
+      tabBarTitles.clear();
+      tabBarTitles.add("jay");
+    }
     _checkPermission();
->>>>>>> a6ef9751101bc02fe32211361cf36849209ec87c
   }
 
   AudioPlayerState playerState;
-  var _positionSubscription, _audioPlayerStateSubscription, position, duration;
+  var _positionSubscription, _audioPlayerStateSubscription, position;
+
+  var duration;
 
   void initPlayer() {
     _positionSubscription = audioPlayer.onAudioPositionChanged.listen((p) {
       setState(() => position = p);
-      print("当前位置position $p");
     });
 
     _audioPlayerStateSubscription =
@@ -93,12 +94,8 @@ class _MusicListState extends State<MusicList>  {
         position = new Duration(seconds: 0);
       });
     });
-
-
   }
 
-<<<<<<< HEAD
-=======
 // 申请权限
   Future<bool> _checkPermission() async {
     // 先对所在平台进行判断
@@ -120,7 +117,6 @@ class _MusicListState extends State<MusicList>  {
     }
     return false;
   }
->>>>>>> a6ef9751101bc02fe32211361cf36849209ec87c
 
   @override
   void dispose() {
@@ -267,20 +263,24 @@ class _MusicListState extends State<MusicList>  {
     // 设置边下边播
     audioPlayer.pause();
     audioPlayer.play(url);
-    audioPlayer.seek(duration);
-    downloadFile(url, PhoneInfo.findLocalPath(context));
+    audioPlayer.seek(getIntFromMusicTime(duration.toString()).toDouble());
+    downloadFile(url);
   }
 
 // 根据 downloadUrl 和 savePath 下载文件
-  downloadFile(downloadUrl, savePath) async {
-    print("进入下载文件");
+  void downloadFile(downloadUrl) async {
+    print("进入下载文件 $savePath");
+    if (!Directory(savePath).existsSync()) {
+      print("savePath 不存在");
+      return;
+    }
+    // 获取存储路径
     await FlutterDownloader.enqueue(
       url: downloadUrl,
       savedDir: savePath,
       showNotification: true,
       // show download progress in status bar (for Android)
-      openFileFromNotification:
-          true, // click on notification to open downloaded file (for Android)
+      openFileFromNotification: true,
     );
   }
 
@@ -293,19 +293,12 @@ class _MusicListState extends State<MusicList>  {
         children: <Widget>[
           Stack(
             children: <Widget>[
-              RotationTransition(
-                //设置动画的旋转中心
-                alignment: Alignment.center,
-                //动画控制器
-                turns: controller,
-                //将要执行动画的子view
-                child: ClipOval(
-                  child: Image.network(
-                    bannerList[0],
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.fitHeight,
-                  ),
+              ClipOval(
+                child: Image.network(
+                  bannerList[0],
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.fitHeight,
                 ),
               ),
               SizedBox(
@@ -315,8 +308,10 @@ class _MusicListState extends State<MusicList>  {
                 width: 50,
                 child: new CircularProgressIndicator(
                     //0~1的浮点数，用来表示进度多少;如果 value 为 null 或空，则显示一个动画，否则显示一个定值
-                    value: getIntFromMusicTime(position.toString()) /
-                        getIntFromMusicTime(duration.toString()),
+                    value: getIntFromMusicTime(
+                            position == null ? "" : position.toString()) /
+                        getIntFromMusicTime(
+                            duration == null ? "" : duration.toString()),
                     //背景颜色
                     backgroundColor: Colors.yellow,
                     strokeWidth: 2,
@@ -356,15 +351,19 @@ class _MusicListState extends State<MusicList>  {
     );
   }
 
-<<<<<<< HEAD
   int getIntFromMusicTime(String mTime) {
+    if (null == mTime ||
+        mTime.isEmpty ||
+        mTime.endsWith("null") ||
+        mTime.length < 7) {
+      return 1;
+    }
+
     return (int.parse(mTime.substring(0, 1)) * 60 * 60 +
         int.parse(mTime.substring(2, 4)) * 60 +
         int.parse(mTime.substring(5, 7)));
   }
 
-
-=======
   List<Widget> getTabs() {
     List<Widget> tabs = new List();
 
@@ -381,5 +380,22 @@ class _MusicListState extends State<MusicList>  {
     }
     return barViews;
   }
->>>>>>> a6ef9751101bc02fe32211361cf36849209ec87c
+
+  var savePath;
+
+  Future<void> initDownLoader() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await FlutterDownloader.initialize(
+        debug: true // optional: set false to disable printing logs to console
+        );
+    savePath = (await PhoneInfo.findLocalPath(context));
+    print("保存地址 :$savePath");
+    FlutterDownloader.loadTasks().then((List<DownloadTask> tasks) {
+      print("一下载文件 ${tasks.length}");
+      tasks.forEach((f) {
+        print("保存下载信息： ${f.toString()}");
+      });
+    });
+  }
 }
+//todo 封装下载控件 实现下载前根据下载地址检测本地是否已有存储，
