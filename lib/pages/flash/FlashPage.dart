@@ -74,7 +74,7 @@ class _FlashPageState extends State<FlashPage> {
                 ),
               ),
             ),
-            Container(
+           /* Container(
               child: FlatButton(
                 child: Text(
                   isLogin ? "注册" : "登录",
@@ -86,7 +86,7 @@ class _FlashPageState extends State<FlashPage> {
                 },
               ),
               alignment: Alignment.topLeft,
-            )
+            )*/
           ],
         ),
       ),
@@ -103,7 +103,6 @@ class _FlashPageState extends State<FlashPage> {
     // TODO: implement initState
     super.initState();
     const oneSec = const Duration(seconds: 5);
-
     var callback = (timer) {
       print("倒计时结束$_userName");
       _incrementCounter();
@@ -152,6 +151,7 @@ class _FlashPageState extends State<FlashPage> {
         BotToast.showText(text: "登录成功");
         final SharedPreferences prefs = await _prefs;
         prefs.setString(Constants.userName, bmobUserlogin.username);
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MusicList()),
