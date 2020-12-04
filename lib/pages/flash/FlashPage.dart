@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:data_plugin/bmob/response/bmob_registered.dart';
-import 'package:data_plugin/bmob/response/bmob_saved.dart';
 import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jay/common/constants.dart';
 import 'package:jay/pages/musiclist/MusicList.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../HomePage.dart';
 
 class FlashPage extends StatefulWidget {
   @override
@@ -102,7 +103,7 @@ class _FlashPageState extends State<FlashPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    const oneSec = const Duration(seconds: 5);
+    const oneSec = const Duration(seconds: 3);
     var callback = (timer) {
       print("倒计时结束$_userName");
       _incrementCounter();
@@ -114,14 +115,18 @@ class _FlashPageState extends State<FlashPage> {
   Future<void> _incrementCounter() async {
     final SharedPreferences prefs = await _prefs;
     final String userName = prefs.getString(Constants.userName);
-    if (userName == null) {
+    /*if (userName == null) {
       showLogin();
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => MusicList()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
-    }
+    }*/
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
   }
 
   @override

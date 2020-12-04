@@ -38,7 +38,7 @@ class DownloadModel with ChangeNotifier {
     _directoryPath = StorageManager.sharedPreferences.getString(kDirectoryPath);
   }
 
-  List<Song> _downloadSong=[];
+  List<Song> _downloadSong = [];
 
   List<Song> get downloadSong => _downloadSong;
 
@@ -60,10 +60,13 @@ class DownloadModel with ChangeNotifier {
   }
 
   Future downloadFile(Song s) async {
-    final bytes = await readBytes(getSongUrl(s));
+    final bytes = await readBytes(s.urlPath);
     final dir = await getApplicationDocumentsDirectory();
     setDirectoryPath(dir.path);
-    final file = File('${dir.path}/${s.songid}.mp3');
+    //  final file = File('${dir.path}/${s.songid}.mp3');
+
+
+    final file = File('${dir.path}/${s.objectId}.mp3');
 
     if (await file.exists()) {
       return;

@@ -9,11 +9,9 @@ import 'package:flutter_banner_swiper/flutter_banner_swiper.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:jay/beans/Music.dart';
 import 'package:jay/common/PhoneInfo.dart';
-import 'package:jay/models/DownloadModel.dart';
 import 'package:jay/models/SongModel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
 import '../PlayPage.dart';
 
 class MusicList extends StatefulWidget {
@@ -198,15 +196,15 @@ class _MusicListState extends State<MusicList> {
                   position = new Duration(seconds: 0);
 
                   SongModel songModel = Provider.of(context);
-                  DownloadModel downloadModel = Provider.of(context);
-                  downloadModel.setDownloads(musics);
-                  songModel.setSongs(new List<Song>.from(
-                      downloadModel.downloadSong));
+
+                  songModel.setSongs(musics);
                   songModel.setCurrentIndex(index);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => PlayPage(nowPlay: true,),
+                      builder: (_) => PlayPage(
+                        nowPlay: true,
+                      ),
                     ),
                   );
                 },

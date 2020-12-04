@@ -43,6 +43,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.0"
+  bubble_bottom_bar:
+    dependency: "direct main"
+    description:
+      name: bubble_bottom_bar
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.0"
   build:
     dependency: transitive
     description:
@@ -337,7 +344,7 @@ packages:
       name: json_serializable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.3.0"
+    version: "3.1.0"
   kernel:
     dependency: transitive
     description:
