@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
     HomePageModel model = Provider.of(context);
     return Scaffold(
       body: Container(
-        color: Colors.grey,
+        color: Colors.white,
         child: PageView.builder(
           itemBuilder: (ctx, index) => model.pages[index],
           itemCount: model.pages.length,
@@ -22,29 +22,36 @@ class _HomePageState extends State<HomePage> {
           physics: NeverScrollableScrollPhysics(),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        selectedLabelStyle: TextStyle(color: Colors.black, fontSize: 15),
-        unselectedLabelStyle: TextStyle(color: Colors.grey, fontSize: 13),
-        showUnselectedLabels: true,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              label: '搜索'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: '下载'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: '搜索'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: '下载'),
-        ],
-        currentIndex: model.currentIndex,
-        onTap: (vule) {
-          model.setCurrentIndex(vule);
-          model.pageController.jumpToPage(vule);
-        },
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Theme.of(context).accentColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          //指定为fixed就解决了。
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedLabelStyle: TextStyle(color: Colors.black, fontSize: 15),
+          unselectedLabelStyle: TextStyle(color: Colors.grey, fontSize: 13),
+          showUnselectedLabels: true,
+          selectedIconTheme: IconThemeData(size: 30),
+          unselectedIconTheme: IconThemeData(size: 25),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey[200],
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: '搜索'),
+            BottomNavigationBarItem(icon: Icon(Icons.music_note), label: '下载'),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: '收藏'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: '我的'),
+          ],
+          currentIndex: model.currentIndex,
+          onTap: (vule) {
+            model.setCurrentIndex(vule);
+            model.pageController.jumpToPage(vule);
+          },
+        ),
       ),
     );
   }

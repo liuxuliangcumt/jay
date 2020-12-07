@@ -15,13 +15,13 @@ class SongModel with ChangeNotifier {
   }
 
   SongModel() {
-    _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+   // _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
     audioCache1 = new AudioCache(fixedPlayer: _audioPlayer);
   }
 
   AudioCache audioCache1;
 
-  AudioPlayer _audioPlayer;
+  AudioPlayer _audioPlayer= AudioPlayer( );
 
   AudioPlayer get audioPlayer => _audioPlayer;
 
@@ -155,7 +155,7 @@ class Song {
   String author = "";
   String lrc;
   String urlPath;
-  String pic;
+  String picUrl;
   String objectId;
 
   Song.fromJsonMap(Map<String, dynamic> map)
@@ -167,7 +167,7 @@ class Song {
         lrc = map["lrc"],
         urlPath = map["urlPath"],
         objectId = map["objectId"],
-        pic = map["pic"];
+        picUrl = map["picUrl"];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -179,7 +179,12 @@ class Song {
     data['lrc'] = lrc;
     data['objectId'] = objectId;
     data['urlPath'] = urlPath;
-    data['pic'] = pic;
+    data['picUrl'] = picUrl;
     return data;
+  }
+
+  @override
+  String toString() {
+    return 'Song{type: $type, link: $link, songid: $songid, mName: $mName, author: $author, lrc: $lrc, urlPath: $urlPath, picUrl: $picUrl, objectId: $objectId}';
   }
 }

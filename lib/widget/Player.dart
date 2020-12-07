@@ -79,13 +79,12 @@ class PlayerState extends State<Player> {
       if (Theme.of(context).platform == TargetPlatform.iOS) {
         // (Optional) listen for notification updates in the background
         _audioPlayer.startHeadlessService();
-
         // set at least title to see the notification bar on ios.
         _audioPlayer.setNotification(
             title: _songData.currentSong.mName,
             artist: _songData.currentSong.author,
             //albumTitle: 'Name or blank',
-            imageUrl: _songData.currentSong.pic,
+            imageUrl: _songData.currentSong.picUrl,
             forwardSkipInterval: const Duration(seconds: 30),
             // default is 30s
             backwardSkipInterval: const Duration(seconds: 30),
@@ -147,6 +146,7 @@ class PlayerState extends State<Player> {
   }
 
   void play(Song s) async {
+    debugPrint("play");
     setState(() {
       _duration = Duration(seconds: 0);
       _songData.setDuration(_duration);
@@ -154,10 +154,21 @@ class PlayerState extends State<Player> {
       _songData.setPosition(_position);
     });
     String url;
-    if (_downloadData.isDownload(s)) {
+    /*if (_downloadData.isDownload(s)) {
       url = _downloadData.getDirectoryPath + '/${s.songid}.mp3';
     } else {
       url = s.urlPath;
+    }*/
+    url = s.urlPath;
+    debugPrint("url.toString()");
+
+    debugPrint(url.toString());
+    if(_audioPlayer==null){
+      debugPrint("_audioPlayer==null");
+
+    }else{
+      debugPrint("_audioPlayer!!!!==null");
+
     }
     if (url == _songData.url) {
       int result = await _audioPlayer.setUrl(url);
@@ -169,7 +180,7 @@ class PlayerState extends State<Player> {
       if (result == 1) {
         _songData.setPlaying(true);
       }
-      _songData.setUrl(url);
+     _songData.setUrl(url);
     }
   }
 

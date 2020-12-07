@@ -8,6 +8,7 @@ class jayMusic extends BmobObject {
   String mName;
   String urlPath;
   String album;
+  String picUrl;
 
   jayMusic();
 
