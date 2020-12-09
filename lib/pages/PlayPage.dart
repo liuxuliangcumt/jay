@@ -16,10 +16,14 @@ class PlayPage extends StatefulWidget {
   _PlayPageState createState() => _PlayPageState();
 }
 
-class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
+class _PlayPageState extends State<PlayPage>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   AnimationController controllerPlayer;
   Animation<double> animationPlayer;
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
   @override
   initState() {

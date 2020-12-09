@@ -13,7 +13,7 @@ class LrcPage extends StatefulWidget {
   _LrcPageState createState() => _LrcPageState();
 }
 
-class _LrcPageState extends State<LrcPage> {
+class _LrcPageState extends State<LrcPage>with AutomaticKeepAliveClientMixin  {
   ScrollController controller;
 
   SongModel model;
@@ -29,6 +29,9 @@ class _LrcPageState extends State<LrcPage> {
     controller = model.controller;
     super.initState();
   }
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -62,20 +65,23 @@ class _LrcPageState extends State<LrcPage> {
       int curren = model.currentLrc;
       if (curren < lrcBeans.length - 1 &&
           duration.inMilliseconds > lrcBeans[curren].duration.inMilliseconds) {
-        debugPrint("监听  位置 onAudioPositionChanged   进来了");
+
 
         changController();
       }
     });
   }
 
+
   void changController() {
     int curren = model.currentLrc;
     model.setCurrentIndexAdd();
+    debugPrint("监听  onAudioPositionChanged   进来了"+  ((curren + 1) * 30.0).toString());
+
     controller.animateTo(
       (curren + 1) * 30.0,
       duration: const Duration(milliseconds: 500),
-      curve: Curves.linearToEaseOut,
+      curve: Curves.easeInCubic,
     );
   }
 }
