@@ -1,5 +1,6 @@
 import 'package:jay/models/AlbumListModel.dart';
 import 'package:jay/models/DownloadModel.dart';
+import 'package:jay/models/FavoriteModel.dart';
 import 'package:jay/models/HomePageModel.dart';
 import 'package:jay/models/MusicListModel.dart';
 import 'package:jay/models/SongModel.dart';
@@ -27,6 +28,11 @@ List<SingleChildCloneableWidget> independentServices = [
   ChangeNotifierProvider<AlbumListModel>(
     create: (context) => AlbumListModel(),
   ),
+
+  ChangeNotifierProvider<FavoriteModel>(
+    create: (context) => FavoriteModel(),
+  ),
+
 ];
 
 List<SingleChildCloneableWidget> uiConsumableProviders = [

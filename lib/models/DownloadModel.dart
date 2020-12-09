@@ -36,6 +36,20 @@ class DownloadListModel extends ViewStateListModel<Song> {
 class DownloadModel with ChangeNotifier {
   DownloadModel() {
     _directoryPath = StorageManager.sharedPreferences.getString(kDirectoryPath);
+    loadData();
+  }
+
+  @override
+  Future<List<Song>> loadData() async {
+    LocalStorage localStorage = LocalStorage(kLocalStorageSearch);
+    await localStorage.ready;
+    List<Song> downloadList =
+        (localStorage.getItem(kDownloadList) ?? []).map<Song>((item) {
+      return Song.fromJsonMap(item);
+    }).toList();
+    setDownloads(downloadList);
+
+    return downloadList;
   }
 
   List<Song> _downloadSong = [];
@@ -60,21 +74,31 @@ class DownloadModel with ChangeNotifier {
   }
 
   Future downloadFile(Song s) async {
+    debugPrint("下载点击了  进入下载");
+    s.isLoading = true;
+    debugPrint(s.toString());
     final bytes = await readBytes(s.urlPath);
+
+
+
     final dir = await getApplicationDocumentsDirectory();
     setDirectoryPath(dir.path);
     //  final file = File('${dir.path}/${s.songid}.mp3');
 
-
     final file = File('${dir.path}/${s.objectId}.mp3');
-
     if (await file.exists()) {
       return;
     }
 
+    notifyListeners();
     await file.writeAsBytes(bytes);
     if (await file.exists()) {
+      debugPrint("下载点击了  下载结束");
+
+      s.isLoading = false;
       _downloadSong.add(s);
+      debugPrint(s.toString());
+
       saveData();
       notifyListeners();
     }
@@ -91,7 +115,7 @@ class DownloadModel with ChangeNotifier {
 
   Future removeFile(Song s) async {
     final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/${s.songid}.mp3');
+    final file = File('${dir.path}/${s.objectId}.mp3');
     setDirectoryPath(dir.path);
     if (await file.exists()) {
       await file.delete();
@@ -110,7 +134,7 @@ class DownloadModel with ChangeNotifier {
   isDownload(Song newSong) {
     bool isDownload = false;
     for (int i = 0; i < _downloadSong.length; i++) {
-      if (_downloadSong[i].songid == newSong.songid) {
+      if (_downloadSong[i].objectId == newSong.objectId) {
         isDownload = true;
         break;
       }

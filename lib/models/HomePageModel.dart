@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:jay/pages/musiclist/AlbumList.dart';
+import 'package:jay/pages/musiclist/DownloadList.dart';
 import 'package:jay/pages/musiclist/FavoriteList.dart';
-import 'package:jay/pages/musiclist/MusicList.dart';
-
 
 class HomePageModel extends ChangeNotifier {
   int _currentIndex = 0;
@@ -11,9 +10,9 @@ class HomePageModel extends ChangeNotifier {
   int get currentIndex => _currentIndex;
   List<Widget> pages = [
     AlbumList(),
-    Text('text'),
+    DownloadList(),
     FavoriteList(),
-    MusicList()
+    Text('text'),
   ];
 
   void setCurrentIndex(int value) {

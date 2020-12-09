@@ -1,13 +1,23 @@
+import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:jay/beans/LrcItemBean.dart';
 
 class SongModel with ChangeNotifier {
   String _url;
 
   String get url => _url;
+  int currentLrc;
+
+  setCurrentLrc(int c) {
+    currentLrc = c;
+    notifyListeners();
+  }
 
   setUrl(String url) {
     _url = url;
@@ -15,13 +25,14 @@ class SongModel with ChangeNotifier {
   }
 
   SongModel() {
-   // _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+    // _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
     audioCache1 = new AudioCache(fixedPlayer: _audioPlayer);
+    loadLrc();
   }
 
   AudioCache audioCache1;
 
-  AudioPlayer _audioPlayer= AudioPlayer( );
+  AudioPlayer _audioPlayer = AudioPlayer();
 
   AudioPlayer get audioPlayer => _audioPlayer;
 
@@ -72,8 +83,8 @@ class SongModel with ChangeNotifier {
 
   int get songNumber => _currentSongIndex + 1;
 
-  setCurrentIndex(int index) {
-    _currentSongIndex = index;
+  setCurrentIndexAdd() {
+    _currentSongIndex++;
     notifyListeners();
   }
 
@@ -145,18 +156,43 @@ class SongModel with ChangeNotifier {
     _duration = duration;
     notifyListeners();
   }
+
+  String songLrc;
+  List<LrcItemBean> lrcItemBeans = new List();
+
+  loadLrc() async {
+    //  http://www.9ku.com/downlrc.php?id=91161
+
+    final bytes = await readBytes("http://www.9ku.com/downlrc.php?id=91161");
+    Utf8Decoder utf8decoder = new Utf8Decoder();
+    String lrc = utf8decoder.convert(bytes);
+
+    songLrc = lrc;
+    List<String> lrcs = songLrc.split("[");
+    lrcItemBeans.clear();
+    for (int i = 0; i < lrcs.length; i++) {
+      List<String> item = lrcs[i].split(']');
+      debugPrint(lrcs[i]);
+      if (item.length == 2) {
+        lrcItemBeans.add(LrcItemBean(item[0].trim(), item[1].trim()));
+      }
+    }
+    debugPrint(lrcItemBeans.length.toString() + " 歌词个数、 ");
+    notifyListeners();
+  }
 }
 
-class Song {
-  String type;
-  String link;
-  int songid;
-  String mName;
+class Song extends Iterable {
+  String type = "";
+  String link = "";
+  int songid = 0;
+  String mName = "";
   String author = "";
-  String lrc;
-  String urlPath;
-  String picUrl;
-  String objectId;
+  String lrc = "";
+  String urlPath = "";
+  String picUrl = "";
+  String objectId = "";
+  bool isLoading = false;
 
   Song.fromJsonMap(Map<String, dynamic> map)
       : type = map["type"],
@@ -167,6 +203,7 @@ class Song {
         lrc = map["lrc"],
         urlPath = map["urlPath"],
         objectId = map["objectId"],
+        isLoading = false,
         picUrl = map["picUrl"];
 
   Map<String, dynamic> toJson() {
@@ -179,12 +216,17 @@ class Song {
     data['lrc'] = lrc;
     data['objectId'] = objectId;
     data['urlPath'] = urlPath;
+    data['isLoading'] = false;
     data['picUrl'] = picUrl;
     return data;
   }
 
   @override
   String toString() {
-    return 'Song{type: $type, link: $link, songid: $songid, mName: $mName, author: $author, lrc: $lrc, urlPath: $urlPath, picUrl: $picUrl, objectId: $objectId}';
+    return 'Song{type: $type, link: $link, songid: $songid, mName: $mName, author: $author, lrc: $lrc, urlPath: $urlPath, picUrl: $picUrl, objectId: $objectId, isLoading: $isLoading}';
   }
+
+  @override
+  // TODO: implement iterator
+  Iterator get iterator => throw UnimplementedError();
 }

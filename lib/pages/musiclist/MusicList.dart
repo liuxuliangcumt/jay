@@ -26,7 +26,7 @@ class _MusicListState extends State<MusicList> {
     "http://imagescumt.test.upcdn.net/musicBanner/banner3.jpg"
   ];
   List<String> tabBarTitles = [
-    "jay",
+    "Jay",
     "范特西",
     "八度空间",
     "叶惠美",

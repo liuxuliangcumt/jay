@@ -57,23 +57,15 @@ class PlayerState extends State<Player> {
     }
   }
 
-  @override
-  void deactivate() async {
-    print('结束');
-    int result = await _audioPlayer.release();
-    super.deactivate();
-  }
-
   void _initAudioPlayer(SongModel songData) {
     _audioPlayer = songData.audioPlayer;
     _position = _songData.position;
     _duration = _songData.duration;
     _audioPlayer.onDurationChanged.listen((duration) {
       if (!mounted) return;
-      setState(() {
-        _duration = duration;
-        _songData.setDuration(_duration);
-      });
+
+      _duration = duration;
+      _songData.setDuration(_duration);
 
       // TODO implemented for iOS, waiting for android impl
       if (Theme.of(context).platform == TargetPlatform.iOS) {
@@ -97,10 +89,8 @@ class PlayerState extends State<Player> {
     _audioPlayer.onAudioPositionChanged.listen((position) {
       if (!mounted) return;
       if (_isSeeking) return;
-      setState(() {
         _position = position;
         _songData.setPosition(_position);
-      });
     });
 
     _audioPlayer.onPlayerCompletion.listen((event) {
@@ -118,26 +108,20 @@ class PlayerState extends State<Player> {
     _audioPlayer.onPlayerError.listen((msg) {
       if (!mounted) return;
       print('audioPlayer error : $msg');
-      setState(() {
         _duration = Duration(seconds: 0);
         _position = Duration(seconds: 0);
-      });
     });
 
     _audioPlayer.onPlayerStateChanged.listen((state) {
       if (!mounted) return;
-      setState(() {
         _audioPlayerState = state;
         _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
-      });
     });
 
     _audioPlayer.onNotificationPlayerStateChanged.listen((state) {
       if (!mounted) return;
-      setState(() {
         _audioPlayerState = state;
         _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
-      });
     });
   }
 
@@ -147,28 +131,25 @@ class PlayerState extends State<Player> {
 
   void play(Song s) async {
     debugPrint("play");
-    setState(() {
-      _duration = Duration(seconds: 0);
-      _songData.setDuration(_duration);
-      _position = Duration(seconds: 0);
-      _songData.setPosition(_position);
-    });
+_songData.loadLrc();
+    _duration = Duration(seconds: 0);
+    _songData.setDuration(_duration);
+    _position = Duration(seconds: 0);
+    _songData.setPosition(_position);
     String url;
-    /*if (_downloadData.isDownload(s)) {
+    if (_downloadData.isDownload(s)) {
       url = _downloadData.getDirectoryPath + '/${s.songid}.mp3';
     } else {
       url = s.urlPath;
-    }*/
+    }
     url = s.urlPath;
     debugPrint("url.toString()");
 
     debugPrint(url.toString());
-    if(_audioPlayer==null){
+    if (_audioPlayer == null) {
       debugPrint("_audioPlayer==null");
-
-    }else{
+    } else {
       debugPrint("_audioPlayer!!!!==null");
-
     }
     if (url == _songData.url) {
       int result = await _audioPlayer.setUrl(url);
@@ -180,7 +161,7 @@ class PlayerState extends State<Player> {
       if (result == 1) {
         _songData.setPlaying(true);
       }
-     _songData.setUrl(url);
+      _songData.setUrl(url);
     }
   }
 

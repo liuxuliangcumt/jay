@@ -5,6 +5,8 @@ import 'package:jay/models/SongModel.dart';
 import 'package:jay/widget/Player.dart';
 import 'package:provider/provider.dart';
 
+import 'LrcPage.dart';
+
 class PlayPage extends StatefulWidget {
   final bool nowPlay;
 
@@ -60,7 +62,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      AppBarCarousel(),
+                      //  AppBarCarousel(),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.05),
                       /* RotatePlayer(
@@ -103,8 +105,16 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                               ),
                             ),
                             IconButton(
-                              onPressed: () =>
-                                  downloadModel.download(songModel.currentSong),
+                              onPressed: () {
+                                debugPrint("下载点击了");
+                                debugPrint(songModel.currentSong.toString());
+                                if (songModel.currentSong.isLoading) {
+                                  return;
+                                }
+                                downloadModel.download(songModel.currentSong);
+                                debugPrint("下载点击了之后");
+                                debugPrint(songModel.currentSong.toString());
+                              },
                               icon: downloadModel
                                       .isDownload(songModel.currentSong)
                                   ? Icon(
@@ -112,11 +122,17 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                       size: 25.0,
                                       color: Theme.of(context).accentColor,
                                     )
-                                  : Icon(
-                                      Icons.cloud_download,
-                                      size: 25.0,
-                                      color: Colors.grey,
-                                    ),
+                                  : songModel.currentSong.isLoading
+                                      ? Icon(
+                                          Icons.file_download,
+                                          size: 25.0,
+                                          color: Colors.red,
+                                        )
+                                      : Icon(
+                                          Icons.cloud_download,
+                                          size: 25.0,
+                                          color: Colors.grey,
+                                        ),
                             ),
                           ]),
                       SizedBox(
@@ -162,8 +178,8 @@ class AppBarCarousel extends StatelessWidget {
               size: 25.0,
               color: Colors.grey,
             ),
-            onPressed: () => {
-              Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
             },
           ),
           IconButton(

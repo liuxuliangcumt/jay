@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:jay/models/DownloadModel.dart';
 import 'package:jay/models/HomePageModel.dart';
 import 'package:provider/provider.dart';
 
