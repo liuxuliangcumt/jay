@@ -12,12 +12,7 @@ class SongModel with ChangeNotifier {
   String _url;
 
   String get url => _url;
-  int currentLrc;
-
-  setCurrentLrc(int c) {
-    currentLrc = c;
-    notifyListeners();
-  }
+  ScrollController controller = ScrollController();
 
   setUrl(String url) {
     _url = url;
@@ -83,8 +78,8 @@ class SongModel with ChangeNotifier {
 
   int get songNumber => _currentSongIndex + 1;
 
-  setCurrentIndexAdd() {
-    _currentSongIndex++;
+  setCurrentIndex(int index) {
+    _currentSongIndex = index;
     notifyListeners();
   }
 
@@ -158,8 +153,12 @@ class SongModel with ChangeNotifier {
   }
 
   String songLrc;
+  int currentLrc=0;
   List<LrcItemBean> lrcItemBeans = new List();
-
+  setCurrentIndexAdd() {
+    currentLrc++;
+    notifyListeners();
+  }
   loadLrc() async {
     //  http://www.9ku.com/downlrc.php?id=91161
 
@@ -178,6 +177,7 @@ class SongModel with ChangeNotifier {
       }
     }
     debugPrint(lrcItemBeans.length.toString() + " 歌词个数、 ");
+    currentLrc=0;
     notifyListeners();
   }
 }

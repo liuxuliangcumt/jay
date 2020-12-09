@@ -14,7 +14,8 @@ class LrcPage extends StatefulWidget {
 }
 
 class _LrcPageState extends State<LrcPage> {
-  ScrollController controller = ScrollController();
+  ScrollController controller;
+
   SongModel model;
 
   AudioPlayer _audioPlayer;
@@ -25,7 +26,7 @@ class _LrcPageState extends State<LrcPage> {
   void initState() {
     model = widget.songModel;
     _initAudioPlayer(model);
-
+    controller = model.controller;
     super.initState();
   }
 
@@ -58,19 +59,23 @@ class _LrcPageState extends State<LrcPage> {
     _audioPlayer = songModel.audioPlayer;
 
     _audioPlayer.onAudioPositionChanged.listen((duration) {
-      if (model.currentLrc < lrcBeans.length - 1 &&
-          duration.inMilliseconds >
-              lrcBeans[model.currentLrc].duration.inMilliseconds) {
+      int curren = model.currentLrc;
+      if (curren < lrcBeans.length - 1 &&
+          duration.inMilliseconds > lrcBeans[curren].duration.inMilliseconds) {
         debugPrint("监听  位置 onAudioPositionChanged   进来了");
 
-        debugPrint(duration.toString());
-        model.setCurrentIndexAdd();
-        controller.animateTo(
-          model.currentLrc * 30.0,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.linearToEaseOut,
-        );
+        changController();
       }
     });
+  }
+
+  void changController() {
+    int curren = model.currentLrc;
+    model.setCurrentIndexAdd();
+    controller.animateTo(
+      (curren + 1) * 30.0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.linearToEaseOut,
+    );
   }
 }
