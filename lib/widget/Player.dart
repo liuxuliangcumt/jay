@@ -52,8 +52,16 @@ class PlayerState extends State<Player> {
     _songData = widget.songData;
     _downloadData = widget.downloadData;
     _initAudioPlayer(_songData);
+
+
     if (_songData.isPlaying || widget.nowPlay) {
-      play(_songData.currentSong);
+
+      Future.delayed(Duration(seconds: 2), () {
+        // 延时2秒开启播放  防止initState时 SongModel执行 notifyListeners
+        play(_songData.currentSong);
+      });
+    } else {
+      setUrl(_songData.currentSong);
     }
   }
 
@@ -63,10 +71,8 @@ class PlayerState extends State<Player> {
     _duration = _songData.duration;
     _audioPlayer.onDurationChanged.listen((duration) {
       if (!mounted) return;
-
       _duration = duration;
       _songData.setDuration(_duration);
-
       // TODO implemented for iOS, waiting for android impl
       if (Theme.of(context).platform == TargetPlatform.iOS) {
         // (Optional) listen for notification updates in the background
@@ -89,8 +95,8 @@ class PlayerState extends State<Player> {
     _audioPlayer.onAudioPositionChanged.listen((position) {
       if (!mounted) return;
       if (_isSeeking) return;
-        _position = position;
-        _songData.setPosition(_position);
+      _position = position;
+      _songData.setPosition(_position);
     });
 
     _audioPlayer.onPlayerCompletion.listen((event) {
@@ -108,20 +114,20 @@ class PlayerState extends State<Player> {
     _audioPlayer.onPlayerError.listen((msg) {
       if (!mounted) return;
       print('audioPlayer error : $msg');
-        _duration = Duration(seconds: 0);
-        _position = Duration(seconds: 0);
+      _duration = Duration(seconds: 0);
+      _position = Duration(seconds: 0);
     });
 
     _audioPlayer.onPlayerStateChanged.listen((state) {
       if (!mounted) return;
-        _audioPlayerState = state;
-        _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
+      _audioPlayerState = state;
+      _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
     });
 
     _audioPlayer.onNotificationPlayerStateChanged.listen((state) {
       if (!mounted) return;
-        _audioPlayerState = state;
-        _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
+      _audioPlayerState = state;
+      _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
     });
   }
 
@@ -131,28 +137,15 @@ class PlayerState extends State<Player> {
 
   void play(Song s) async {
     debugPrint("play");
-_songData.loadLrc();
+    _songData.loadLrc();
     _duration = Duration(seconds: 0);
     _songData.setDuration(_duration);
     _position = Duration(seconds: 0);
     _songData.setPosition(_position);
-    String url;
-    if (_downloadData.isDownload(s)) {
-      url = _downloadData.getDirectoryPath + '/${s.songid}.mp3';
-    } else {
-      url = s.urlPath;
-    }
-    url = s.urlPath;
-    debugPrint("url.toString()");
-
-    debugPrint(url.toString());
-    if (_audioPlayer == null) {
-      debugPrint("_audioPlayer==null");
-    } else {
-      debugPrint("_audioPlayer!!!!==null");
-    }
-    if (url == _songData.url) {
-      int result = await _audioPlayer.setUrl(url);
+    await setUrl(s);
+    resume();
+    /* if (url == _songData.url) {
+      int result = await
       if (result == 1) {
         _songData.setPlaying(true);
       }
@@ -161,18 +154,29 @@ _songData.loadLrc();
       if (result == 1) {
         _songData.setPlaying(true);
       }
-      _songData.setUrl(url);
-    }
+    }*/
   }
+
+  setUrl(Song s) async {
+    String url;
+    if (_downloadData.isDownload(s)) {
+      url = _downloadData.getDirectoryPath + '/${s.objectId}.mp3';
+    } else {
+      url = s.urlPath;
+    }
+    _audioPlayer.setUrl(url);
+    _songData.setUrl(url);
+  }
+
 
   void pause() async {
     final result = await _audioPlayer.pause();
-    if (result == 1) setState(() => _songData.setPlaying(false));
+    if (result == 1) _songData.setPlaying(false);
   }
 
   void resume() async {
     final result = await _audioPlayer.resume();
-    if (result == 1) setState(() => _songData.setPlaying(true));
+    if (result == 1) _songData.setPlaying(true);
   }
 
   void next() {

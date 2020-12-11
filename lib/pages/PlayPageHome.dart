@@ -12,7 +12,6 @@ class PlayPageHome extends StatefulWidget {
 
 class _PlayPageHomeState extends State<PlayPageHome>
     with SingleTickerProviderStateMixin {
-  PageController _pageController = PageController();
   TabController _tabController;
 
   @override
@@ -26,30 +25,29 @@ class _PlayPageHomeState extends State<PlayPageHome>
   Widget build(BuildContext context) {
     SongModel model = Provider.of(context);
     return Scaffold(
+      backgroundColor: Colors.pink[200],
       appBar: AppBar(
         leading: Text(""),
-        backgroundColor: Colors.blue[200],
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: TabBar(
-          indicatorSize: TabBarIndicatorSize.label,
-          controller: _tabController,
-          indicatorColor: Colors.grey,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.grey,
-          labelStyle: TextStyle(color: Colors.red, fontSize: 20),
-          unselectedLabelStyle: TextStyle(color: Colors.black, fontSize: 18),
-          tabs: [Tab(child: Text('歌曲')), Tab(child: Text('歌词'))],
-          onTap: (index) {
-            _pageController.jumpToPage(index);
-          },
+        title: Container(
+          width: 150,
+          child: TabBar(
+            indicatorSize: TabBarIndicatorSize.label,
+            controller: _tabController,
+            indicatorColor: Colors.grey,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.grey[200],
+            labelStyle: TextStyle(color: Colors.red, fontSize: 14),
+            unselectedLabelStyle: TextStyle(color: Colors.black, fontSize: 12),
+            tabs: [Tab(child: Text('歌曲')), Tab(child: Text('歌词'))],
+          ),
         ),
         centerTitle: true,
       ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          _tabController.animateTo(index);
-        },
+      body: TabBarView(
+        controller: _tabController,
+        physics: BouncingScrollPhysics(),
         children: [
           PlayPage(
             nowPlay: true,

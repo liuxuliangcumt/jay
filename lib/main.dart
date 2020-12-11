@@ -22,10 +22,12 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
         providers: providers,
+
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
             primarySwatch: Colors.blue,
+            backgroundColor: Colors.white
           ),
           builder: BotToastInit(), //BotToastInit移动到此处,
           home: Scaffold(

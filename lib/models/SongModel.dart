@@ -12,7 +12,6 @@ class SongModel with ChangeNotifier {
   String _url;
 
   String get url => _url;
-  ScrollController controller = ScrollController();
 
   setUrl(String url) {
     _url = url;
@@ -153,12 +152,14 @@ class SongModel with ChangeNotifier {
   }
 
   String songLrc;
-  int currentLrc=0;
+  int currentLrc = 0;
   List<LrcItemBean> lrcItemBeans = new List();
+
   setCurrentIndexAdd() {
     currentLrc++;
     notifyListeners();
   }
+
   loadLrc() async {
     //  http://www.9ku.com/downlrc.php?id=91161
 
@@ -170,14 +171,29 @@ class SongModel with ChangeNotifier {
     List<String> lrcs = songLrc.split("[");
     lrcItemBeans.clear();
     for (int i = 0; i < lrcs.length; i++) {
+      if (lrcs[i].trim().length == 0) {
+        continue;
+      }
       List<String> item = lrcs[i].split(']');
-      debugPrint(lrcs[i]);
       if (item.length == 2) {
-        lrcItemBeans.add(LrcItemBean(item[0].trim(), item[1].trim()));
+        if (item[1].trim().length == 0) {
+          List<String> item2 = item[0].split(':');
+          if (item2.length == 2) {
+            if (item[0].contains("ti")) {
+              lrcItemBeans.add(LrcItemBean("", "" + item2[1].trim()));
+            } else if (item[0].contains("ar")) {
+              lrcItemBeans.add(LrcItemBean("", "歌手：" + item2[1].trim()));
+            } else if (item[0].contains("al")) {
+              lrcItemBeans.add(LrcItemBean("", "专辑：" + item2[1].trim()));
+            }
+          }
+        } else {
+          lrcItemBeans.add(LrcItemBean(item[0].trim(), item[1].trim()));
+        }
       }
     }
     debugPrint(lrcItemBeans.length.toString() + " 歌词个数、 ");
-    currentLrc=0;
+    currentLrc = 0;
     notifyListeners();
   }
 }

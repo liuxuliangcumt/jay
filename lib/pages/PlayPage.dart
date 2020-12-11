@@ -58,6 +58,7 @@ class _PlayPageState extends State<PlayPage>
       controllerPlayer.stop(canceled: false);
     }
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -159,7 +160,7 @@ class _PlayPageState extends State<PlayPage>
             Player(
               songData: songModel,
               downloadData: downloadModel,
-              nowPlay: widget.nowPlay,
+              nowPlay: true,
             ),
           ],
         ),
