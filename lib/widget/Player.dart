@@ -216,7 +216,7 @@ class PlayerState extends State<Player> {
 
   Widget _timer(BuildContext context) {
     var style = new TextStyle(
-      color: Colors.grey,
+      color: Colors.white,
       fontSize: 12,
     );
     return new Row(
@@ -288,7 +288,7 @@ class PlayerState extends State<Player> {
                 icon: Icon(
                   Icons.list,
                   size: 25.0,
-                  color: Colors.grey,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -338,12 +338,12 @@ class PlayerState extends State<Player> {
                     ? Icon(
                         Icons.repeat,
                         size: 25.0,
-                        color: Colors.grey,
+                        color: Colors.white,
                       )
                     : Icon(
                         Icons.shuffle,
                         size: 25.0,
-                        color: Colors.grey,
+                        color: Colors.white,
                       ),
               ),
             ),

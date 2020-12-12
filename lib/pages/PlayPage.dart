@@ -85,7 +85,7 @@ class _PlayPageState extends State<PlayPage>
                               icon: Icon(
                                 Icons.list,
                                 size: 25.0,
-                                color: Colors.grey,
+                                color: Colors.white,
                               ),
                             ),
                             IconButton(
@@ -94,19 +94,19 @@ class _PlayPageState extends State<PlayPage>
                                   ? Icon(
                                       Icons.repeat,
                                       size: 25.0,
-                                      color: Colors.grey,
+                                      color: Colors.white,
                                     )
                                   : Icon(
                                       Icons.shuffle,
                                       size: 25.0,
-                                      color: Colors.grey,
+                                      color: Colors.white,
                                     ),
                             ),
                             IconButton(
                               icon: Icon(
                                 Icons.favorite_border,
                                 size: 25.0,
-                                color: Colors.grey,
+                                color: Colors.white,
                               ),
                             ),
                             IconButton(
@@ -136,7 +136,7 @@ class _PlayPageState extends State<PlayPage>
                                       : Icon(
                                           Icons.cloud_download,
                                           size: 25.0,
-                                          color: Colors.grey,
+                                          color: Colors.white,
                                         ),
                             ),
                           ]),
@@ -144,13 +144,13 @@ class _PlayPageState extends State<PlayPage>
                           height: MediaQuery.of(context).size.height * 0.02),
                       Text(
                         "songModel.currentSong.author",
-                        style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                        style: TextStyle(color: Colors.white, fontSize: 15.0),
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Text(
                         songModel.currentSong.mName,
-                        style: TextStyle(fontSize: 20.0),
+                        style: TextStyle(fontSize: 20.0,color: Colors.white),
                       ),
                     ],
                   )
@@ -181,7 +181,7 @@ class AppBarCarousel extends StatelessWidget {
             icon: Icon(
               Icons.arrow_back_ios,
               size: 25.0,
-              color: Colors.grey,
+              color: Colors.white,
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -191,7 +191,7 @@ class AppBarCarousel extends StatelessWidget {
             icon: Icon(
               Icons.more_vert,
               size: 25.0,
-              color: Colors.grey,
+              color: Colors.white,
             ),
             onPressed: () => {},
           ),
