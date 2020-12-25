@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jay/models/AlbumListModel.dart';
 import 'package:jay/models/SongModel.dart';
 import 'package:jay/pages/LrcPage.dart';
 import 'package:jay/pages/PlayPage.dart';
@@ -13,19 +14,23 @@ class PlayPageHome extends StatefulWidget {
 class _PlayPageHomeState extends State<PlayPageHome>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
+  AnimationController c;
+  InheritedWidget iwidget;
 
   @override
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
+    AlbumListModel model = Provider.of(context);
+    model.logic.getMusicList("Jay");
   }
 
   @override
   Widget build(BuildContext context) {
     SongModel model = Provider.of(context);
     return Scaffold(
-      backgroundColor: Colors.pink[200],
+      backgroundColor: Color(0xFF373331),
       appBar: AppBar(
         leading: Text(""),
         backgroundColor: Colors.transparent,

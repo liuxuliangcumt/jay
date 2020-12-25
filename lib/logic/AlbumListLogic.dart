@@ -26,7 +26,7 @@ class AlbumListLogic {
     });
   }
 
-  getMusicList(String albumName) {
+  getMusicList(String albumName) async {
     List<Song> musics = new List();
     BmobQuery<jayMusic> query = BmobQuery();
     query.addWhereEqualTo("album", albumName);

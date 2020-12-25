@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jay/models/DownloadModel.dart';
+import 'package:jay/models/FavoriteModel.dart';
 import 'package:jay/models/SongModel.dart';
 import 'package:jay/widget/Player.dart';
 import 'package:provider/provider.dart';
-
-import 'LrcPage.dart';
 
 class PlayPage extends StatefulWidget {
   final bool nowPlay;
@@ -21,6 +20,7 @@ class _PlayPageState extends State<PlayPage>
   AnimationController controllerPlayer;
   Animation<double> animationPlayer;
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
+
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
@@ -51,6 +51,7 @@ class _PlayPageState extends State<PlayPage>
   Widget build(BuildContext context) {
     SongModel songModel = Provider.of(context);
     DownloadModel downloadModel = Provider.of(context);
+    FavoriteModel favouriteModel = Provider.of(context);
 
     if (songModel.isPlaying) {
       controllerPlayer.forward();
@@ -103,11 +104,21 @@ class _PlayPageState extends State<PlayPage>
                                     ),
                             ),
                             IconButton(
-                              icon: Icon(
-                                Icons.favorite_border,
-                                size: 25.0,
-                                color: Colors.white,
-                              ),
+                              onPressed: () =>
+                                  favouriteModel.collect(songModel.currentSong),
+                              icon: favouriteModel
+                                          .isCollect(songModel.currentSong) ==
+                                      true
+                                  ? Icon(
+                                      Icons.favorite,
+                                      size: 25.0,
+                                      color: Theme.of(context).accentColor,
+                                    )
+                                  : Icon(
+                                      Icons.favorite_border,
+                                      size: 25.0,
+                                      color: Colors.grey,
+                                    ),
                             ),
                             IconButton(
                               onPressed: () {
@@ -142,15 +153,15 @@ class _PlayPageState extends State<PlayPage>
                           ]),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02),
-                      Text(
+                      /* Text(
                         "songModel.currentSong.author",
                         style: TextStyle(color: Colors.white, fontSize: 15.0),
-                      ),
+                      ),*/
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Text(
                         songModel.currentSong.mName,
-                        style: TextStyle(fontSize: 20.0,color: Colors.white),
+                        style: TextStyle(fontSize: 20.0, color: Colors.white),
                       ),
                     ],
                   )

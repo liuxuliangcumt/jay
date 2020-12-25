@@ -12,7 +12,7 @@ class SongModel with ChangeNotifier {
   String _url;
 
   String get url => _url;
-
+  int currentPosition = 0; // 当前歌词url位置
   setUrl(String url) {
     _url = url;
     notifyListeners();
@@ -113,6 +113,9 @@ class SongModel with ChangeNotifier {
       Random r = new Random();
       _currentSongIndex = r.nextInt(_songs.length);
     }
+    currentLrc = 0;
+    currentPosition = 0;
+    lrcItemBeans.clear();
     notifyListeners();
     return _songs[_currentSongIndex];
   }
@@ -129,6 +132,9 @@ class SongModel with ChangeNotifier {
       Random r = new Random();
       _currentSongIndex = r.nextInt(_songs.length);
     }
+    currentLrc = 0;
+    currentPosition = 0;
+    lrcItemBeans.clear();
     notifyListeners();
     return _songs[_currentSongIndex];
   }
@@ -162,8 +168,13 @@ class SongModel with ChangeNotifier {
 
   loadLrc() async {
     //  http://www.9ku.com/downlrc.php?id=91161
-
-    final bytes = await readBytes("http://www.9ku.com/downlrc.php?id=91161");
+    Song song = currentSong;
+    if (song == null || song.urlPath.isEmpty) return;
+    String id = song.urlPath.substring(
+        song.urlPath.lastIndexOf("/") + 1, song.urlPath.lastIndexOf(".") + 1);
+    String path = "http://www.9ku.com/downlrc.php?id=" + id;
+    debugPrint("歌词地址：      " + path);
+    final bytes = await readBytes(path);
     Utf8Decoder utf8decoder = new Utf8Decoder();
     String lrc = utf8decoder.convert(bytes);
 
@@ -175,6 +186,10 @@ class SongModel with ChangeNotifier {
         continue;
       }
       List<String> item = lrcs[i].split(']');
+      if (item[1].contains("九酷")) {
+        continue;
+      }
+
       if (item.length == 2) {
         if (item[1].trim().length == 0) {
           List<String> item2 = item[0].split(':');

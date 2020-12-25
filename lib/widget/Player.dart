@@ -1,4 +1,3 @@
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,9 +52,7 @@ class PlayerState extends State<Player> {
     _downloadData = widget.downloadData;
     _initAudioPlayer(_songData);
 
-
     if (_songData.isPlaying || widget.nowPlay) {
-
       Future.delayed(Duration(seconds: 2), () {
         // 延时2秒开启播放  防止initState时 SongModel执行 notifyListeners
         play(_songData.currentSong);
@@ -168,7 +165,6 @@ class PlayerState extends State<Player> {
     _songData.setUrl(url);
   }
 
-
   void pause() async {
     final result = await _audioPlayer.pause();
     if (result == 1) _songData.setPlaying(false);
@@ -184,7 +180,6 @@ class PlayerState extends State<Player> {
     while (data.urlPath == null) {
       data = _songData.nextSong;
     }
-
     play(data);
   }
 

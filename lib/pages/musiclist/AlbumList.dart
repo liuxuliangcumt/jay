@@ -5,7 +5,6 @@ import 'package:jay/models/FavoriteModel.dart';
 import 'package:jay/models/SongModel.dart';
 import 'package:provider/provider.dart';
 
-import '../PlayPage.dart';
 import '../PlayPageHome.dart';
 
 class AlbumList extends StatefulWidget {
@@ -15,10 +14,20 @@ class AlbumList extends StatefulWidget {
 
 class _AlbumListState extends State<AlbumList>
     with AutomaticKeepAliveClientMixin {
+
+
+  @override
+  void initState() {
+
+    // TODO: implement initState
+    super.initState();
+   // model.logic.getMusicList("Jay");
+  }
+
   @override
   Widget build(BuildContext context) {
-    AlbumListModel model = Provider.of(context);
     SongModel songModel = Provider.of(context);
+    AlbumListModel model= Provider.of(context);
 
     return SafeArea(
         child: SingleChildScrollView(

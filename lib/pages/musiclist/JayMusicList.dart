@@ -29,7 +29,7 @@ class JayMusicList extends StatelessWidget {
                       onTap: () {});
                 },
               ),*/
-              AlbumList(),
+
 
             ],
           ),
