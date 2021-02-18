@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:jay/models/AlbumListModel.dart';
 import 'package:jay/models/DownloadModel.dart';
 import 'package:jay/models/HomePageModel.dart';
 import 'package:provider/provider.dart';
@@ -10,16 +11,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
+
   @override
   Widget build(BuildContext context) {
-
     HomePageModel model = Provider.of(context);
     return Scaffold(
       body: Container(

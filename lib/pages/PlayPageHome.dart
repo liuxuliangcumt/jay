@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jay/models/AlbumListModel.dart';
+
 import 'package:jay/models/SongModel.dart';
 import 'package:jay/pages/LrcPage.dart';
 import 'package:jay/pages/PlayPage.dart';
@@ -22,8 +22,7 @@ class _PlayPageHomeState extends State<PlayPageHome>
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
-    AlbumListModel model = Provider.of(context);
-    model.logic.getMusicList("Jay");
+
   }
 
   @override

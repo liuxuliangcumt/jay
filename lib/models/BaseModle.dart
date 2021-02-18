@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class BaseModel extends ChangeNotifier {
-
-
-
   void refresh(){
     notifyListeners();
   }

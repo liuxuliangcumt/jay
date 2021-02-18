@@ -218,6 +218,7 @@ class PlayerState extends State<Player> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
+
         new Text(
           _formatDuration(_position),
           style: style,
@@ -232,6 +233,7 @@ class PlayerState extends State<Player> {
 
   List<Widget> _controllers(BuildContext context) {
     return [
+
       Visibility(
         visible: !_songData.showList,
         child: new Slider(

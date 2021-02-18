@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:jay/models/AlbumListModel.dart';
 import 'package:jay/models/FavoriteModel.dart';
 import 'package:jay/models/SongModel.dart';
+import 'package:jay/widget/xball_view.dart';
 import 'package:provider/provider.dart';
 
 import '../PlayPageHome.dart';
@@ -12,22 +13,24 @@ class AlbumList extends StatefulWidget {
   _AlbumListState createState() => _AlbumListState();
 }
 
-class _AlbumListState extends State<AlbumList>
-    with AutomaticKeepAliveClientMixin {
-
-
+class _AlbumListState extends State<AlbumList> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
-
     // TODO: implement initState
     super.initState();
-   // model.logic.getMusicList("Jay");
+    // model.logic.getMusicList("Jay");
+
+    Future.delayed(Duration(milliseconds: 500), () {
+      AlbumListModel model = Provider.of(context);
+      debugPrint("PlayPageHome  initState");
+      model.logic.getMusicList("Jay");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     SongModel songModel = Provider.of(context);
-    AlbumListModel model= Provider.of(context);
+    AlbumListModel model = Provider.of(context);
 
     return SafeArea(
         child: SingleChildScrollView(
@@ -62,10 +65,7 @@ class _AlbumListState extends State<AlbumList>
                         ),
                         Text(
                           model.albums[index].name,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
                         )
                       ],
                     ),
@@ -73,14 +73,25 @@ class _AlbumListState extends State<AlbumList>
                 },
               ),
             ),
-            ListView.builder(
-              itemCount: model.songs.length,
-              shrinkWrap: true, //解决无限高度问题
-              physics: new NeverScrollableScrollPhysics(),
-              itemBuilder: (c, index) {
-                return buildItem(index, model, songModel);
-              },
+            Container(
+              child: SwitchListTile(
+                value: model.isBall,
+                title: Text('球形展示'),
+                onChanged: (v) {
+                  model.setBall(v);
+                },
+              ),
             ),
+            model.isBall
+                ? getBallView(model)
+                : ListView.builder(
+                    itemCount: model.songs.length,
+                    shrinkWrap: true, //解决无限高度问题
+                    physics: new NeverScrollableScrollPhysics(),
+                    itemBuilder: (c, index) {
+                      return buildItem(index, model, songModel);
+                    },
+                  ),
           ],
         ),
       ),
@@ -128,13 +139,9 @@ class _AlbumListState extends State<AlbumList>
           ),
           IconButton(
             icon: Icon(
-              favoriteModel.isCollect(song)
-                  ? Icons.favorite
-                  : Icons.favorite_border,
+              favoriteModel.isCollect(song) ? Icons.favorite : Icons.favorite_border,
               size: 20,
-              color: favoriteModel.isCollect(song)
-                  ? Theme.of(context).accentColor
-                  : Colors.grey,
+              color: favoriteModel.isCollect(song) ? Theme.of(context).accentColor : Colors.grey,
             ),
             onPressed: () {
               favoriteModel.collect(song);
@@ -144,9 +151,17 @@ class _AlbumListState extends State<AlbumList>
         ],
       ),
     );
-    return Text(
-      song.mName,
-      style: TextStyle(color: Colors.black),
+  }
+
+  getBallView(AlbumListModel albumListModel) {
+    return Container(
+      height: 380,
+      child: albumListModel.songs.length != 0
+          ? XBallView(
+              mediaQueryData: MediaQuery.of(context),
+              context: context,
+            )
+          : Text('text'),
     );
   }
 }
