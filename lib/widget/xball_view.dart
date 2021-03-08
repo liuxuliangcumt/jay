@@ -119,8 +119,8 @@ class _XBallViewState extends State<XBallView> with SingleTickerProviderStateMix
     AlbumListModel model = Provider.of(context);
     widget.keywords = model.songs;
     widget.highlight = [model.songs.first];
-    widget.points=model.points;
-    model.generatePoints();
+
+
 
     return Scaffold(
       body: Container(
